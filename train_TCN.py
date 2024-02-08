@@ -12,36 +12,30 @@ from tcn_model import TCNModel
 import matplotlib.pyplot as plt 
 import prepare_data
 
-# 添加分布式训练初始化
-#dist.init_process_group(backend='nccl')  # 使用NCCL作为后端
 
-# 定义超参数
 hyperparameters = {
     'number_transition': 1,
-    'output_size': 1,  # 卷积层通道数
-    'tcn_layers': 4,  # TCN 模型的卷积层数
-    'kernel_size': 3,  # 卷积核大小
-    'batch_size': 32,  # 批量大小
-    'learning_rate': 0.001,  # 学习率
-    'num_epochs': 2000,  # 训练轮数
+    'output_size': 1,  
+    'tcn_layers': 4,  
+    'kernel_size': 3,  
+    'batch_size': 32,  
+    'learning_rate': 0.001, 
+    'num_epochs': 2000,  
     'margin': 2,
     'filter_out': 90,
     'used_driver_size': 20,
     'aim_driver': 17,
-    'slide_length': 1,  ##滑动几格
+    'slide_length': 1,  
     'move_size': 1,
     
 }
 
-#window_size = 252 + 127 * hyperparameters['number_transition']   old version
+
 
 window_size = 252 + 127 * (hyperparameters['number_transition']-1)
-input_size = 1   ######通道数
+input_size = 1  
 
-######prepare samples
 
-#aim_driver = random.randint(0, 49)
-#aim_driver = 10
 
 tuple_list = prepare_data.get_triples(hyperparameters['aim_driver'], hyperparameters['number_transition'], hyperparameters['filter_out'], hyperparameters['used_driver_size'], hyperparameters['slide_length'],hyperparameters['move_size'])
 
@@ -52,7 +46,7 @@ print("success prepare tuples, amount is ", sample_number)
 
 batched_data = torch.stack([torch.stack(t) for t in tuple_list], dim=1)
 
-# 创建数据集和数据加载器
+
 dataset = TensorDataset(batched_data)
 dataloader = DataLoader(dataset, batch_size=hyperparameters['batch_size'], shuffle=True)
 
