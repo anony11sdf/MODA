@@ -11,30 +11,10 @@ import matplotlib.pyplot as plt
 from GAN_model import Generator, Discriminator
 
 
-
-
-# 获取所有可用的GPU列表
-# gpu_list = GPUtil.getAvailable(order='first', limit=1, maxLoad=0.1, maxMemory=0.1, includeNan=False, excludeID=[])
-
-# if gpu_list:
-#     # 如果有可用的GPU，则选择第一个空闲的GPU
-#     selected_gpu = gpu_list[2]
-#     print(f"Selected GPU: {selected_gpu}")
-
-#     # 将模型移动到选定的GPU上
-#     device = torch.device(f"cuda:{selected_gpu}")
-#     #model.to(device)
-
-#     # 此处可以在选定的GPU上训练模型或执行其他操作
-# else:
-#     print("No available GPUs.")
-
-# 检查是否有可用的 CUDA 设备
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 
 
-# 自定义数据集类
 class TransitionDataset(Dataset):
     def __init__(self, transitions):
         self.transitions = transitions
@@ -42,20 +22,9 @@ class TransitionDataset(Dataset):
     def __len__(self):
         return len(self.transitions)
 
-    # def __getitem__(self, idx):
-    #     transition = self.transitions[idx]
-    #     state, action, reward, next_state = (
-    #         torch.tensor(transition[:125], dtype=torch.float32),
-    #         torch.tensor(transition[125], dtype=torch.float32).view(1),  # 使用 view(1) 将零维转为一维
-    #         torch.tensor(transition[126], dtype=torch.float32).view(1),  # 使用 view(1) 将零维转为一维
-    #         torch.tensor(transition[127:], dtype=torch.float32)
-    #     )
-    #     input_data = torch.cat([state, action, reward, next_state])
-    #     target_data = torch.cat([next_state, reward])
-    #     return input_data, target_data
 
     def __getitem__(self, idx):
-        # 直接使用252维的向量
+
         transition = torch.tensor(self.transitions[idx], dtype=torch.float32)
         return transition, transition  # 第二个 transition 作为占位符，实际不使用
 
@@ -79,12 +48,6 @@ generator = Generator(input_size, output_size).to(device)
 discriminator = Discriminator(output_size).to(device)
 
 
-
-# 如果有多个 GPU 可用，使用 DataParallel 包装模型
-# if torch.cuda.device_count() > 1:
-#     print("使用多个 GPU...")
-#     generator = nn.DataParallel(generator)
-#     discriminator = nn.DataParallel(discriminator)
 
 # 定义生成器和判别器的优化器
 gen_optimizer = torch.optim.Adam(generator.parameters(), lr=0.0005)
@@ -138,8 +101,6 @@ for epoch in range(epochs):
         torch.save(discriminator.state_dict(), f'GAN_discriminator_UDS_epoch_{epoch+1}.pth')
 
 
-
-# 保存生成器和判别器模型
 torch.save(generator.state_dict(), 'generator_model17_UDS.pth')
 torch.save(discriminator.state_dict(), 'discriminator_model17_UDS.pth')
 
