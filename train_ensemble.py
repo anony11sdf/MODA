@@ -76,8 +76,6 @@ def train_dynamic_model(model, train_dataloader, optimizer, num_epochs=Epoch):
         
         losses.append(loss.item())
         
-        if (epoch + 1) % 100 == 0: 
-            torch.save(...)
         
     torch.save( )
     
