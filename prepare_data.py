@@ -13,7 +13,6 @@ def get_subtraj(trajectory, number_transition, start_index):
     
     
     if start_index + number_transition - 1 >= len(trajectory):
-        #print('error1')
         tp = []
         return tp
     
