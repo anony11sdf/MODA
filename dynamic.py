@@ -144,7 +144,7 @@ state_size = 125
 action_size = 1
 reward_size = 1  
 
-lr = 0.1
+lr = 0.002
 simple_dynamic_model = SimpleDynamicModel(state_size, action_size, reward_size).to(device)
 
 
