@@ -22,17 +22,21 @@ hyperparameters = {
     'learning_rate': 0.001, 
     'num_epochs': 2000,  
     'margin': 2,
-    'filter_out': 90,
+    'filter_out': 80,
     'used_driver_size': 20,
-    'aim_driver': 17,
+    'aim_driver': ...,
     'slide_length': 1,  
-    'move_size': 1,
+    'move_size': 10,
     
 }
 
+transition_size = ...
+
+consecutive_add_size = ...
 
 
-window_size = 252 + 127 * (hyperparameters['number_transition']-1)
+
+window_size = transition_size + consecutive_add_size * (hyperparameters['number_transition']-1)
 input_size = 1  
 
 
@@ -40,9 +44,7 @@ input_size = 1
 tuple_list = prepare_data.get_triples(hyperparameters['aim_driver'], hyperparameters['number_transition'], hyperparameters['filter_out'], hyperparameters['used_driver_size'], hyperparameters['slide_length'],hyperparameters['move_size'])
 
 sample_number = len(tuple_list)
-print(tuple_list[100])
 
-print("success prepare tuples, amount is ", sample_number)
 
 batched_data = torch.stack([torch.stack(t) for t in tuple_list], dim=1)
 
@@ -51,7 +53,7 @@ dataset = TensorDataset(batched_data)
 dataloader = DataLoader(dataset, batch_size=hyperparameters['batch_size'], shuffle=True)
 
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device(...)
 
 model = TCNModel(input_size, hyperparameters['output_size'], hyperparameters['tcn_layers'], hyperparameters['kernel_size']).to(device)
 
@@ -64,8 +66,6 @@ def triplet_margin_loss(anchor, positive, negative, margin):
     d_positive = torch.norm(anchor - positive, dim=1) * 10  
     d_negative = torch.norm(anchor - negative, dim=1) * 10  
     
-    
-    print(d_positive, ' ',d_negative)
     
     loss = torch.relu(d_positive - d_negative + margin)
     return loss.mean()  
