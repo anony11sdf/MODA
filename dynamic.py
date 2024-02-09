@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 num_epochs=2000
 
-device = torch.device('cuda:5' if torch.cuda.is_available() else 'cpu')
+device = torch.device(...)
 
 
 class SubModel_state(nn.Module):
@@ -118,17 +118,9 @@ def train_simple_dynamic_model(model, train_dataloader, optimizer, num_epochs=20
 
         average_loss = total_loss / len(train_dataloader)
         losses.append(average_loss)
-        print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {average_loss:.4f}')
 
 
-    
-    plt.plot(losses, label='Training Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.title('Training Loss Over Time')
-    plt.legend()
-    plt.show()
-    plt.savefig('simple_dynamic.png')
+
     return model
 
 
@@ -140,11 +132,11 @@ train_dataset = TransitionDataset(full_transition_buffer)
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
 
-state_size = 125
-action_size = 1
-reward_size = 1  
+state_size =  ...
+action_size = ...
+reward_size = ...
 
-lr = 0.002
+lr = ...
 simple_dynamic_model = SimpleDynamicModel(state_size, action_size, reward_size).to(device)
 
 
