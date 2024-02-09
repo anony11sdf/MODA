@@ -68,14 +68,11 @@ def train_dynamic_model(model, train_dataloader, optimizer, num_epochs=Epoch):
             optimizer.step()
             
             
-            
 
-
-        print(f'Epoch [{epoch}/{num_epochs}], Loss: {loss.item():.4f}')
         
         et = time.time()
         execution_time = et - st
-        print(f"batch时间：{execution_time:.2f}秒")
+
         
         losses.append(loss.item())
         
@@ -102,7 +99,7 @@ if __name__ == "__main__":
     
     optimizer = torch.optim.Adam(dynamic_model.parameters(), lr)
 
-    with open('/home/xinbo/project1/data/full_buffer.pkl', 'rb') as f:
+    with open('', 'rb') as f:
         full_transition_buffer = pickle.load(f)
         
     print(type(full_transition_buffer),len(full_transition_buffer),type(full_transition_buffer[0]),len(full_transition_buffer[0]))
