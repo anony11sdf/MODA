@@ -45,8 +45,6 @@ class SubModel_reward(nn.Module):
         
         x = self.fc2(x)
         
-        x = torch.clamp(x, min=-100, max=200)  
-        
         return x
     
     
@@ -142,8 +140,6 @@ train_dataset = TransitionDataset(full_transition_buffer)
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
 
-
-# Model initialization
 state_size = 125
 action_size = 1
 reward_size = 1  
@@ -151,11 +147,10 @@ reward_size = 1
 lr = 0.1
 simple_dynamic_model = SimpleDynamicModel(state_size, action_size, reward_size).to(device)
 
-# Optimizer
+
 optimizer = optim.Adam(simple_dynamic_model.parameters(), lr)
 
-# Train the model
+
 trained_model = train_simple_dynamic_model(simple_dynamic_model, train_dataloader, optimizer, num_epochs)
 
-# Save the trained model
 torch.save(trained_model.state_dict(), '.....')
