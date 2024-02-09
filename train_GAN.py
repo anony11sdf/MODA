@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from GAN_model import Generator, Discriminator
 
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device(...)
 
 
 
@@ -29,10 +29,10 @@ class TransitionDataset(Dataset):
         return transition, transition  
 
 
-input_size = 100  
-output_size = 252  
-batch_size = 32
-epochs = 5000
+input_size = ... 
+output_size = ...  
+batch_size = ...
+epochs = ...
 
 
 with open('', 'rb') as file:
