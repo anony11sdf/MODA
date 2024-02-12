@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel
 
-from tcn_model import TCNModel
+from Contrastive_model import TCNModel
 import matplotlib.pyplot as plt 
 import prepare_data
 
