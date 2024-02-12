@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from our_MDP import SimpleDynamicModel, Discriminator, CustomSACEnv
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device(...)
 
 # SAC Actor
 class SACActor(nn.Module):
@@ -36,15 +36,16 @@ class SACActor(nn.Module):
         log_prob = action_dist.log_prob(action)
         return action, log_prob
 
-# SAC Critic模型
+
 class SACCritic(nn.Module):
     def __init__(self, state_dim, action_dim):
         super(SACCritic, self).__init__()
-        # Q1网络
+        # Q1
         self.fc1 = nn.Linear(state_dim + action_dim, 256)
         self.fc2 = nn.Linear(256, 256)
         self.q1 = nn.Linear(256, 1)
-        # Q2网络
+        
+        # Q2
         self.fc3 = nn.Linear(state_dim + action_dim, 256)
         self.fc4 = nn.Linear(256, 256)
         self.q2 = nn.Linear(256, 1)
@@ -73,7 +74,6 @@ class ReplayBuffer:
         
 
         reward = torch.FloatTensor([reward]).to(device)
-
         
         done = 1 if done else 0  
         
@@ -94,7 +94,7 @@ class ReplayBuffer:
     def __len__(self):
         return len(self.buffer)
 
-# SAC训练函数
+# train
 def train_sac(env, actor_model, critic_model, target_critic_model, episodes, batch_size, gamma, tau, alpha):
     optimizer_actor = optim.Adam(actor_model.parameters(), lr=1e-3)
     optimizer_critic = optim.Adam(critic_model.parameters(), lr=1e-3)
@@ -184,15 +184,13 @@ def train_sac(env, actor_model, critic_model, target_critic_model, episodes, bat
                 actor_loss = (alpha * log_probs - Q_min_new).mean()
                 
                 
-                print(f"Critic loss: {critic_loss.item()}, Actor loss: {actor_loss.item()}")
-                
                 actor_losses.append(actor_loss.item())
                 critic_losses.append(critic_loss.item())                
                             
 
                 for name, param in actor_model.named_parameters():
                     if param.grad is not None:
-                        print(f"Grad - {name}: max: {param.grad.max().item()}, min: {param.grad.min().item()}, mean: {param.grad.mean().item()}")
+                        pass
 
                                 
                 optimizer_actor.zero_grad()
@@ -202,17 +200,11 @@ def train_sac(env, actor_model, critic_model, target_critic_model, episodes, bat
                 torch.nn.utils.clip_grad_norm_(actor_model.parameters(), max_norm=1.0)
                 optimizer_actor.step()
 
-            if done:
-                print("done  ",done)
-                print(f"Episode {episode}: Total Reward: {episode_reward}")
+
 
                 break
             
 
-    
-    
-    
-    
     torch.save(...)
 
 
@@ -227,6 +219,11 @@ gamma = 0.99
 tau = 0.005  
 alpha = 0.2  
 buffer_capacity = 300000  
+state_size = ..
+action_size = ..
+action_dim = ...
+reward_size = ..
+transition_size = 2 * state_size + action_size + reward_siez
 
 
 replay_buffer = ReplayBuffer(capacity=buffer_capacity)
@@ -240,13 +237,13 @@ discriminator_model_path = '...'
 
 full_buffer = pickle.load(file)
 
-dynamic_model = SimpleDynamicModel(state_size=125, action_size=1, reward_size=1, ensemble_size=1)
+dynamic_model = SimpleDynamicModel(state_size = state_size, action_size=1, reward_size=1, ensemble_size=1)
 dynamic_model.load_state_dict(torch.load(dynamic_model_path))
 dynamic_model.to(device)
 dynamic_model.eval() 
 
 
-discriminator_model = Discriminator(input_size=252)  
+discriminator_model = Discriminator(input_size=transition_size)  
 discriminator_model.load_state_dict(torch.load(discriminator_model_path))
 discriminator_model.to(device)
 discriminator_model.eval()  
@@ -255,11 +252,11 @@ discriminator_model.eval()
 env = CustomSACEnv(dynamic_model=dynamic_model, discriminator_model=discriminator_model, full_buffer = full_buffer, device=device)
 
 
-actor_model = SACActor(state_dim=125, action_dim=19, action_bound=18).to(device)
-critic_model = SACCritic(state_dim=125, action_dim=19).to(device)
+actor_model = SACActor(state_dim=state_size, action_dim , action_bound= ..).to(device)
+critic_model = SACCritic(state_dim=state_size, action_dim ).to(device)
 
 
-target_critic_model = SACCritic(state_dim=125, action_dim=19).to(device)
+target_critic_model = SACCritic(state_dim=state_size, action_dim).to(device)
 
 
 target_critic_model.load_state_dict(critic_model.state_dict())
