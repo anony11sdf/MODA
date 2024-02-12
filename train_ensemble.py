@@ -17,7 +17,7 @@ ensemble_size = 5
 lr=0.002
 batch_size=64
 
-device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+device = torch.device(...)
 
 
 
@@ -31,10 +31,10 @@ class TransitionDataset(Dataset):
     def __getitem__(self, idx):
         transition = self.transitions[idx]
         state, action, reward, next_state = (
-            torch.tensor(transition[:125]),
-            torch.tensor(transition[125]).unsqueeze(0),
-            torch.tensor(transition[126]).unsqueeze(0),
-            torch.tensor(transition[127:])
+            torch.tensor(transition[:state_size]),
+            torch.tensor(transition[state_size]).unsqueeze(0),
+            torch.tensor(transition[state_size + action_size]).unsqueeze(0),
+            torch.tensor(transition[state_size + action_size + reward_size:])
         )
         return torch.cat([state, action]), torch.cat([next_state, reward])
 
@@ -83,9 +83,9 @@ def train_dynamic_model(model, train_dataloader, optimizer, num_epochs=Epoch):
 
 if __name__ == "__main__":
 
-    state_size = 125
-    action_size = 1
-    reward_size = 1
+    state_size = ...
+    action_size = ..
+    reward_size = ..
 
 
     dynamic_model = DynamicModel(state_size, action_size, reward_size, ensemble_size)
@@ -100,7 +100,6 @@ if __name__ == "__main__":
     with open('', 'rb') as f:
         full_transition_buffer = pickle.load(f)
         
-    print(type(full_transition_buffer),len(full_transition_buffer),type(full_transition_buffer[0]),len(full_transition_buffer[0]))
 
 
     train_dataset = TransitionDataset(full_transition_buffer)
