@@ -6,7 +6,11 @@ import torch
 import random
 
 
-    
+state_size = ....
+reward_size = ....
+action_size = ...
+
+transition_size = state_size * 2 + action_size + reward_size
 
 
 def get_subtraj(trajectory, number_transition, start_index):
@@ -29,12 +33,12 @@ def get_subtraj(trajectory, number_transition, start_index):
     if index > len(trajectory)-1:
         tp = []
         return tp
-    tmp = trajectory[index][0:125]
+    tmp = trajectory[index][0:state_size]
     subtraj = subtraj + tmp #### s'
     
     
     
-    if len(subtraj) != (252 + 127 * (number_transition-1)) :
+    if len(subtraj) != (transition_size + (state_size+action_size+reward+size) * (number_transition-1)) :
         print('error2', len(trajectory), ' ',len(trajectory[start_index]),' ', number_transition, ' ',start_index,' ',index,' ',len(subtraj))
     
     return subtraj
@@ -102,7 +106,7 @@ def get_triples(aim_driver :int, number_transition :int, filter_out:int, used_dr
                                 negative = torch.tensor(negative, dtype=torch.float32)
                                 tuple = (anchor, positive, negative)
                                 
-                                if len(anchor)!= 252 + 127 * (number_transition-1) or len(positive)!= 252 + 127 * (number_transition-1) or len(negative)!= 252 + 127 * (number_transition-1):
+                                if len(anchor)!= transition_size + (state_size+action_size+reward+size) * (number_transition-1) or len(positive)!= transition_size + (state_size+action_size+reward+size) * (number_transition-1) or len(negative)!= transition_size + (state_size+action_size+reward+size) * (number_transition-1):
                                     print('error', len(anchor),' ',len(positive),' ',len(negative))
                                     
                                     
@@ -145,7 +149,7 @@ def get_anchor(aim_driver :int, number_transition :int, filter_out:int, used_dri
                             break
                         
                         anchor = get_subtraj(trajectory, number_transition, i)
-                        if len(anchor)!= 252 + 127 * (number_transition-1) :
+                        if len(anchor)!= transition_size + (state_size+action_size+reward+size) * (number_transition-1) :
                             print('error', len(anchor))
                             continue
                             
@@ -188,7 +192,7 @@ def get_negative(aim_driver :int, number_transition :int, filter_out:int, used_d
                     negative = get_subtraj(trajectory, number_transition, i)
                     
                     
-                    if len(negative)!= 252 + 127 * (number_transition-1) :
+                    if len(negative)!= transition_size + (state_size+action_size+reward+size) * (number_transition-1) :
                         print('error', len(negative))
                         continue
                         
